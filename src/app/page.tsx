@@ -42,12 +42,11 @@ function App() {
   // Rotating words for Target
   const rotatingTargets = [
     'Vitalik.eth',
-    '0x1234...ABCD',
-    'friend.wallet',
-    'ENS name',
+    'All who faved my casts the past week',
+    'All $credit holders',
+    'Top 100 $higher holders',
     '0x40FF...7eB',
-    'gm.crypto',
-    'your wallet',
+    'All who tipped me on Farcaster',
   ]
   const [hasUserSelected, setHasUserSelected] = useState(false)
   const [sendAddress, setSendAddress] = useState('')
@@ -189,7 +188,7 @@ function App() {
                 />
                 {/* Animated rotating text overlay */}
                 {!hasUserSelected && !sendAddress && (
-                  <div className="absolute left-0 top-0 w-full h-full flex items-center px-3 pointer-events-none text-neutral-400 dark:text-neutral-500 select-none fade-rotator-text">
+                  <div className={`absolute left-0 top-0 w-full h-full flex items-center px-3 pointer-events-none select-none fade-rotator-text ${!hasUserSelected ? 'text-green-500' : 'text-neutral-400 dark:text-neutral-500'}`}>
                     <RotatingText words={rotatingTargets} interval={2200} fadeDuration={600} />
                   </div>
                 )}
@@ -252,8 +251,10 @@ function App() {
                 <button
                   type="button"
                   onClick={handleSendTransaction}
-                  disabled={isLoading}
-                  className={`px-4 py-2 rounded-lg font-bold shadow w-full transition text-white ${isLoading ? 'bg-yellow-400 cursor-not-allowed opacity-70' : 'bg-green-800 hover:bg-green-700'}`}
+                  disabled={isLoading || !hasUserSelected}
+                  className={`px-4 py-2 rounded-lg font-bold shadow w-full transition text-white
+                    ${isLoading ? 'bg-yellow-400 cursor-not-allowed opacity-70' :
+                      !hasUserSelected ? 'bg-neutral-400 cursor-not-allowed' : 'bg-green-800 hover:bg-green-700'}`}
                 >
                   {isLoading ? (
                     <span className="flex text-black items-center justify-center">
