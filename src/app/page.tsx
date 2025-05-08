@@ -42,8 +42,10 @@ function App() {
   // Rotating words for Target
   const rotatingTargets = [
     'Vitalik.eth',
-    'All who faved my casts the past week',
+    'All who faved my casts past week',
     'All $credit holders',
+    'All $fathorse holders',
+    'All basepaint painters',
     'Top 100 $higher holders',
     '0x40FF...7eB',
     'All who tipped me on Farcaster',
@@ -119,7 +121,7 @@ function App() {
   // No need for single processing toast effect with stacked toasts
 
   return (
-    <div className={`min-h-screen flex flex-col items-center justify-start md:justify-center from-neutral-900 via-neutral-950 to-neutral-800 transition-colors duration-500 ${flashGreen ? 'bg-green-400' : ''} ${flashRed ? 'bg-red-500' : ''}`}>
+    <div className={`min-h-screen flex flex-col items-center justify-center md:justify-center from-neutral-900 via-neutral-950 to-neutral-800 transition-colors duration-500 ${flashGreen ? 'bg-green-400' : ''} ${flashRed ? 'bg-red-500' : ''}`}>
       {/* Header */}
       <header className="w-full flex flex-col items-center mt-8 mb-6 md:mt-0 md:mb-8">
         <div className="w-full max-w-md">
