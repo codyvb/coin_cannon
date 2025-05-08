@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
+import TextRotator from 'react-text-rotator'
 import { parseEther } from 'viem'
 import { useAccount, useConnect, useDisconnect, useSendTransaction, useSignMessage } from 'wagmi'
 
@@ -16,7 +17,18 @@ function App() {
   const [txHash, setTxHash] = useState<string | null>(null)
 
   // State for dynamic address, amount, and frequency
-  const [sendAddress, setSendAddress] = useState('0x40FF52E1848660327F16ED96a307259Ec1D757eB')
+  // Rotating words for Target
+  const rotatingTargets = [
+    'Vitalik.eth',
+    '0x1234...ABCD',
+    'friend.wallet',
+    'ENS name',
+    '0x40FF...7eB',
+    'gm.crypto',
+    'your wallet',
+  ]
+  const [hasUserSelected, setHasUserSelected] = useState(false)
+  const [sendAddress, setSendAddress] = useState('')
   const [sendAmount, setSendAmount] = useState('0.00001')
   const [frequency, setFrequency] = useState(1)
 
@@ -89,7 +101,7 @@ function App() {
       {/* Header */}
       <header className="w-full flex flex-col items-center mt-8 mb-6 md:mt-0 md:mb-8">
         <div className="w-full max-w-md">
-          <h1 className="text-3xl md:text-4xl text-white font-mono tracking-tight text-center">Coin Cannon</h1>
+          <h1 className="text-3xl md:text-4xl text-white font-mono tracking-tight text-center">Send some coins</h1>
         </div>
       </header>
 
@@ -131,15 +143,39 @@ function App() {
           <section className="flex flex-col gap-4">
             <div>
               <label htmlFor="send-address" className="block text-sm font-medium text-neutral-700 dark:text-neutral-200 mb-1">Target</label>
-              <input
-                id="send-address"
-                type="text"
-                value={sendAddress}
-                onChange={e => setSendAddress(e.target.value)}
-                className="w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100 shadow focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="0x..."
-                autoComplete="off"
-              />
+              <div className="relative">
+                <input
+                  id="send-address"
+                  type="text"
+                  value={sendAddress}
+                  onFocus={() => {
+                    if (!hasUserSelected) {
+                      setHasUserSelected(true)
+                      // Always default to this address on first interaction
+                      setSendAddress('0x40FF52E1848660327F16ED96a307259Ec1D757eB')
+                    }
+                  }}
+                  onChange={e => {
+                    setSendAddress(e.target.value)
+                    setHasUserSelected(true)
+                  }}
+                  className="w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100 shadow focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  placeholder={hasUserSelected ? '' : ''}
+                  autoComplete="off"
+                  spellCheck={false}
+                  autoCorrect="off"
+                />
+                {/* Animated rotating text overlay */}
+                {!hasUserSelected && !sendAddress && (
+                  <div className="absolute left-0 top-0 w-full h-full flex items-center px-3 pointer-events-none text-neutral-400 dark:text-neutral-500 select-none">
+                    <TextRotator
+                      content={rotatingTargets.map(word => ({ text: word, className: '' }))}
+                      time={1500}
+                      startDelay={300}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
             <div>
               <label htmlFor="send-amount" className="block text-sm font-medium text-neutral-700 dark:text-neutral-200 mb-1">Token (ETH)</label>
@@ -150,7 +186,7 @@ function App() {
                 step="any"
                 value={sendAmount}
                 onChange={e => setSendAmount(e.target.value)}
-                className="w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100 shadow focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100 shadow focus:outline-none focus:ring-2 focus:ring-violet-500"
                 placeholder="0.001"
                 autoComplete="off"
               />
@@ -165,7 +201,7 @@ function App() {
                     type="button"
                     onClick={() => setFrequency(num)}
                     className={`flex-1 px-4 py-1 rounded-lg border font-semibold transition text-sm text-center
-                      ${frequency === num ? 'bg-neutral-500 text-white border-neutral-900 shadow' : 'bg-neutral-100 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 border-neutral-300 dark:border-neutral-600 hover:bg-blue-100 dark:hover:bg-neutral-600'}`}
+                      ${frequency === num ? 'bg-neutral-500 text-white border-neutral-900 shadow' : 'bg-neutral-100 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 border-neutral-300 dark:border-neutral-600 hover:bg-violet-100 dark:hover:bg-neutral-600'}`}
                   >
                     {num}
                   </button>
@@ -186,7 +222,7 @@ function App() {
                       key={connector.uid}
                       onClick={() => connect({ connector })}
                       type="button"
-                      className="mb-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold shadow w-full transition"
+                      className="mb-2 px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-700 text-white font-bold shadow w-full transition"
                     >
                       Connect to fire
                     </button>
@@ -228,7 +264,7 @@ function App() {
                 <button
                   type="button"
                   onClick={() => disconnect()}
-                  className="mt-2 text-xs text-blue-600 dark:text-blue-400 hover:underline focus:outline-none bg-transparent p-0 border-0"
+                  className="mt-2 text-xs text-violet-600 dark:text-violet-400 hover:underline focus:outline-none bg-transparent p-0 border-0"
                 >
                   Disconnect
                 </button>
