@@ -2,6 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes slideup-fade {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  85% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.animate-slideup-fade {
+  animation: slideup-fade 0.8s cubic-bezier(0.4,0,0.2,1) both, slideup-fade 7s linear forwards;
+}
+
 :root {
   background-color: #181818;
   color: rgba(255, 255, 255, 0.87);

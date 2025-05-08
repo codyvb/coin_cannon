@@ -15,9 +15,29 @@ function App() {
   const [txError, setTxError] = useState<string | null>(null)
   const [txHash, setTxHash] = useState<string | null>(null)
 
-  // State for dynamic address and amount
+  // State for dynamic address, amount, and frequency
   const [sendAddress, setSendAddress] = useState('0x40FF52E1848660327F16ED96a307259Ec1D757eB')
   const [sendAmount, setSendAmount] = useState('0.00001')
+  const [frequency, setFrequency] = useState(1)
+
+  // Toast stack state
+  type ToastType = 'success' | 'error' | 'processing'
+  interface Toast {
+    id: number
+    type: ToastType
+    message: string
+    link?: string
+  }
+  const [toasts, setToasts] = useState<Toast[]>([])
+  const toastIdRef = React.useRef(0)
+
+  function addToast(toast: Omit<Toast, 'id'>, duration = 7000) {
+    const id = ++toastIdRef.current
+    setToasts((prev) => [...prev, { ...toast, id }])
+    setTimeout(() => {
+      setToasts((prev) => prev.filter(t => t.id !== id))
+    }, duration)
+  }
 
   // Toast and flash state
   const [showToast, setShowToast] = useState(false)
@@ -34,46 +54,35 @@ function App() {
     setIsLoading(true)
     setTxError(null)
     setTxHash(null)
-    setToastType('processing')
-    setToastMessage('Transaction is processing...')
-    setToastLink(null)
-    setShowToast(true)
-    try {
-      const hash = await sendTransactionAsync({
-        to: sendAddress as `0x${string}`,
-        value: parseEther(sendAmount),
-      })
-      setTxHash(hash)
-      setToastType('success')
-      setToastMessage('Transaction sent! 🎉')
-      setToastLink(`https://base-sepolia.blockscout.com/tx/${hash}`)
-      setShowToast(true)
-      setFlashGreen(true)
-      setTimeout(() => setFlashGreen(false), 1000)
-      setTimeout(() => setShowToast(false), 7000)
-    } catch (err: any) {
-      let msg = err?.message || 'Transaction failed';
-      if (msg.includes('transfer amount exceeds balance')) {
-        msg = 'Sub wallet is out of ETH.';
+    for (let i = 0; i < frequency; i++) {
+      addToast({ type: 'processing', message: `Transaction ${i+1} of ${frequency} is processing...` }, 10000)
+      try {
+        const hash = await sendTransactionAsync({
+          to: sendAddress as `0x${string}`,
+          value: parseEther(sendAmount),
+        })
+        setTxHash(hash)
+        addToast({
+          type: 'success',
+          message: `Transaction ${i+1} sent! 🎉`,
+          link: `https://base-sepolia.blockscout.com/tx/${hash}`
+        })
+        setFlashGreen(true)
+        setTimeout(() => setFlashGreen(false), 1000)
+      } catch (err: any) {
+        let msg = err?.message || 'Transaction failed';
+        if (msg.includes('transfer amount exceeds balance')) {
+          msg = 'Sub wallet is out of ETH.';
+        }
+        addToast({ type: 'error', message: `Tx ${i+1} failed: ${msg}` })
+        setFlashRed(true)
+        setTimeout(() => setFlashRed(false), 1000)
       }
-      setToastType('error')
-      setToastMessage(msg)
-      setToastLink(null)
-      setShowToast(true)
-      setFlashRed(true)
-      setTimeout(() => setFlashRed(false), 1000)
-      setTimeout(() => setShowToast(false), 7000)
-    } finally {
-      setIsLoading(false)
     }
+    setIsLoading(false)
   }
 
-  // Hide processing toast as soon as loading ends
-  useEffect(() => {
-    if (!isLoading && toastType === 'processing') {
-      setShowToast(false);
-    }
-  }, [isLoading, toastType]);
+  // No need for single processing toast effect with stacked toasts
 
   return (
     <div className={`min-h-screen flex flex-col items-center justify-start md:justify-center from-neutral-900 via-neutral-950 to-neutral-800 transition-colors duration-500 ${flashGreen ? 'bg-green-400' : ''} ${flashRed ? 'bg-red-500' : ''}`}>
@@ -116,8 +125,8 @@ function App() {
       )}
 
       {/* Main Content */}
-      <main className="flex items-center justify-center px-2 md:px-0">
-        <div className="w-full sm:w-[421.16px] bg-white/90 dark:bg-neutral-800 rounded-2xl shadow-xl p-8 flex flex-col gap-7">
+      <main className="flex items-center justify-center px-2 md:px-0 w-full max-w-full overflow-x-hidden">
+        <div className="w-full max-w-full mx-2 sm:mx-0 sm:w-[421.16px] bg-white/90 dark:bg-neutral-800 rounded-2xl shadow-xl p-8 flex flex-col gap-7">
           {/* Send Address & Amount Controls */}
           <section className="flex flex-col gap-4">
             <div>
@@ -145,6 +154,23 @@ function App() {
                 placeholder="0.001"
                 autoComplete="off"
               />
+            </div>
+            {/* Frequency Selector */}
+            <div>
+              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-200 mb-1">Frequency</label>
+              <div className="flex mt-4 gap-3 w-full">
+                {[1, 5, 10].map((num) => (
+                  <button
+                    key={num}
+                    type="button"
+                    onClick={() => setFrequency(num)}
+                    className={`flex-1 px-4 py-1 rounded-lg border font-semibold transition text-sm text-center
+                      ${frequency === num ? 'bg-neutral-500 text-white border-neutral-900 shadow' : 'bg-neutral-100 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 border-neutral-300 dark:border-neutral-600 hover:bg-blue-100 dark:hover:bg-neutral-600'}`}
+                  >
+                    {num}
+                  </button>
+                ))}
+              </div>
             </div>
           </section>
 
@@ -183,7 +209,7 @@ function App() {
                       </svg>
                       Firing...
                     </span>
-                  ) : 'Fire cannon'}
+                  ) : 'Fire Cannon'}
                 </button>
 
 
@@ -212,21 +238,29 @@ function App() {
         </div>
       </main>
 
-      {/* Toast for transaction status */}
-      {showToast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[95vw] max-w-md">
-          <div className={`flex flex-col sm:flex-row items-center justify-between gap-3 bg-white text-neutral-900 px-5 py-4 rounded-xl shadow-2xl animate-slideup border-l-8
-            ${toastType === 'success' ? 'border-green-500' : ''}
-            ${toastType === 'error' ? 'border-red-500' : ''}
-            ${toastType === 'processing' ? 'border-yellow-400' : ''}`}
+      {/* Toast stack for transaction status */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[95vw] max-w-md flex flex-col gap-3 pointer-events-none">
+        {toasts.map((toast, idx) => (
+          <div
+            key={toast.id}
+            className={`flex flex-col sm:flex-row items-center justify-between gap-3 bg-white text-neutral-900 px-5 py-4 rounded-xl shadow-2xl animate-slideup-fade border-l-8
+              ${toast.type === 'success' ? 'border-green-500' : ''}
+              ${toast.type === 'error' ? 'border-red-500' : ''}
+              ${toast.type === 'processing' ? 'border-yellow-400' : ''}
+              ${toast.type === 'processing' ? 'animate-pulse' : ''}
+            `}
+            style={{
+              animationDelay: `${idx * 0.08}s`,
+              pointerEvents: 'auto',
+            }}
           >
             <span className={`font-semibold text-base sm:text-lg
-              ${toastType === 'error' ? 'text-red-600' : ''}
-              ${toastType === 'processing' ? 'text-yellow-600 animate-pulse' : ''}
-            `}>{toastMessage}</span>
-            {toastType === 'success' && toastLink && (
+              ${toast.type === 'error' ? 'text-red-600' : ''}
+              ${toast.type === 'processing' ? 'text-yellow-600' : ''}
+            `}>{toast.message}</span>
+            {toast.type === 'success' && toast.link && (
               <a
-                href={toastLink}
+                href={toast.link}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-2 sm:mt-0 px-4 py-2 rounded-lg bg-green-500 hover:bg-green-600 text-white text-sm font-bold shadow transition underline-offset-2 focus:outline-none"
@@ -235,8 +269,8 @@ function App() {
               </a>
             )}
           </div>
-        </div>
-      )}
+        ))}
+      </div>
 
       {/* Footer */}
       <footer className="w-full py-4 text-center text-xs text-neutral-400">
