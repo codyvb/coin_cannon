@@ -51,6 +51,7 @@ function App() {
   const [hasUserSelected, setHasUserSelected] = useState(false)
   const [sendAddress, setSendAddress] = useState('')
   const [sendAmount, setSendAmount] = useState('0.00001')
+  const [selectedToken, setSelectedToken] = useState('ETH')
   const [frequency, setFrequency] = useState(1)
 
   // Toast stack state
@@ -195,18 +196,35 @@ function App() {
               </div>
             </div>
             <div>
-              <label htmlFor="send-amount" className="block text-sm font-medium text-neutral-700 dark:text-neutral-200 mb-1">Token (ETH)</label>
-              <input
-                id="send-amount"
-                type="number"
-                min="0"
-                step="any"
-                value={sendAmount}
-                onChange={e => setSendAmount(e.target.value)}
-                className="w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100 shadow focus:outline-none focus:ring-2 focus:ring-violet-500"
-                placeholder="0.001"
-                autoComplete="off"
-              />
+              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-200 mb-1">Token</label>
+              <div className="flex gap-2">
+                <div className="relative min-w-[80px]">
+                  <select
+                    value={selectedToken}
+                    onChange={e => setSelectedToken(e.target.value)}
+                    className="appearance-none rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-2 py-2 text-sm text-neutral-900 dark:text-neutral-100 shadow focus:outline-none focus:ring-2 focus:ring-violet-500 w-full"
+                  >
+                    <option value="ETH">ETH</option>
+                    <option value="USDC">USDC</option>
+                    <option value="DAI">DAI</option>
+                    <option value="WBTC">WBTC</option>
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
+                    <svg className="h-4 w-4 text-neutral-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                  </div>
+                </div>
+                <input
+                  id="send-amount"
+                  type="number"
+                  min="0"
+                  step="any"
+                  value={sendAmount}
+                  onChange={e => setSendAmount(e.target.value)}
+                  className="flex-1 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100 shadow focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  placeholder={`0.001`}
+                  autoComplete="off"
+                />
+              </div>
             </div>
             {/* Frequency Selector */}
             <div>

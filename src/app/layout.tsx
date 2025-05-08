@@ -12,6 +12,17 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Coin Cannon',
+  icons: [
+    { rel: 'icon', url: '/favicon.ico', type: 'image/x-icon' },
+    { rel: 'shortcut icon', url: '/favicon.ico', type: 'image/x-icon' },
+    { rel: 'apple-touch-icon', url: '/favicon.ico', type: 'image/x-icon' },
+  ],
+  openGraph: {
+    title: 'Coin Cannon',
+    images: [
+      { url: '/favicon.ico', width: 64, height: 64, alt: 'Coin Cannon Favicon' },
+    ],
+  },
 }
 
 export default function RootLayout(props: { children: ReactNode }) {
@@ -21,9 +32,7 @@ export default function RootLayout(props: { children: ReactNode }) {
   )
   return (
     <html lang="en">
-      <head>
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      </head>
+
       <body className={inter.className}>
         <Providers initialState={initialState}>{props.children}</Providers>
       </body>
