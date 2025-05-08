@@ -117,7 +117,7 @@ function App() {
 
       {/* Main Content */}
       <main className="flex items-center justify-center px-2 md:px-0">
-        <div className="w-full max-w-md bg-white/90 dark:bg-neutral-800 rounded-2xl shadow-xl p-8 flex flex-col gap-7">
+        <div className="w-full sm:w-[421.16px] bg-white/90 dark:bg-neutral-800 rounded-2xl shadow-xl p-8 flex flex-col gap-7">
           {/* Send Address & Amount Controls */}
           <section className="flex flex-col gap-4">
             <div>
@@ -153,7 +153,6 @@ function App() {
           <section>
             {account.status !== 'connected' ? (
               <>
-                <h2 className="text-xl font-semibold text-neutral-800 dark:text-yellow-200 mb-2">Connect</h2>
                 {connectors
                   .filter((connector) => connector.name === 'Coinbase Wallet')
                   .map((connector) => (
@@ -196,7 +195,8 @@ function App() {
           {account.status === 'connected' && (
             <section className="flex flex-col items-center">
               <div className=" bg-neutral-100 dark:bg-neutral-800 text-xs text-neutral-700 dark:text-neutral-200 w-full text-left">
-                <div className="truncate"><span className="font-semibold">Address:</span> {account.addresses?.[0]}</div>
+                <div className="truncate"><span className="font-semibold">Address:</span> {account.addresses?.[1]}</div>
+                <div className="truncate"><span className="font-semibold">Sub:</span> {account.addresses?.[0]}</div>
                 <div><span className="font-semibold">Chain:</span> {account.chainId}</div>
                 <div><span className="font-semibold">Status:</span> {account.status}</div>
                 <button
