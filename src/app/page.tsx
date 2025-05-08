@@ -1,7 +1,29 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import TextRotator from 'react-text-rotator'
+// Smooth cross-fade rotating text
+function RotatingText({ words, interval = 2200, fadeDuration = 600 }: { words: string[], interval?: number, fadeDuration?: number }) {
+  const [index, setIndex] = useState(0)
+  const [visible, setVisible] = useState(true)
+  useEffect(() => {
+    const fadeOut = setTimeout(() => setVisible(false), interval - fadeDuration)
+    const next = setTimeout(() => {
+      setIndex(i => (i + 1) % words.length)
+      setVisible(true)
+    }, interval)
+    return () => { clearTimeout(fadeOut); clearTimeout(next) }
+  }, [index, interval, fadeDuration, words.length])
+  return (
+    <span
+      className="fade-rotator-text"
+      style={{
+        opacity: visible ? 1 : 0,
+        transition: `opacity ${fadeDuration}ms cubic-bezier(0.4,0,0.2,1)`
+      }}
+    >{words[index]}</span>
+  )
+}
+
 import { parseEther } from 'viem'
 import { useAccount, useConnect, useDisconnect, useSendTransaction, useSignMessage } from 'wagmi'
 
@@ -167,12 +189,8 @@ function App() {
                 />
                 {/* Animated rotating text overlay */}
                 {!hasUserSelected && !sendAddress && (
-                  <div className="absolute left-0 top-0 w-full h-full flex items-center px-3 pointer-events-none text-neutral-400 dark:text-neutral-500 select-none">
-                    <TextRotator
-                      content={rotatingTargets.map(word => ({ text: word, className: '' }))}
-                      time={1500}
-                      startDelay={300}
-                    />
+                  <div className="absolute left-0 top-0 w-full h-full flex items-center px-3 pointer-events-none text-neutral-400 dark:text-neutral-500 select-none fade-rotator-text">
+                    <RotatingText words={rotatingTargets} interval={2200} fadeDuration={600} />
                   </div>
                 )}
               </div>
