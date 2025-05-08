@@ -89,7 +89,7 @@ function App() {
       {/* Header */}
       <header className="w-full flex flex-col items-center mt-8 mb-6 md:mt-0 md:mb-8">
         <div className="w-full max-w-md">
-          <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight text-center">Coin Cannon</h1>
+          <h1 className="text-3xl md:text-4xl text-white font-mono tracking-tight text-center">Coin Cannon</h1>
         </div>
       </header>
 
@@ -130,7 +130,7 @@ function App() {
           {/* Send Address & Amount Controls */}
           <section className="flex flex-col gap-4">
             <div>
-              <label htmlFor="send-address" className="block text-sm font-medium text-neutral-700 dark:text-neutral-200 mb-1">Send Address</label>
+              <label htmlFor="send-address" className="block text-sm font-medium text-neutral-700 dark:text-neutral-200 mb-1">Target</label>
               <input
                 id="send-address"
                 type="text"
@@ -142,7 +142,7 @@ function App() {
               />
             </div>
             <div>
-              <label htmlFor="send-amount" className="block text-sm font-medium text-neutral-700 dark:text-neutral-200 mb-1">Amount (ETH)</label>
+              <label htmlFor="send-amount" className="block text-sm font-medium text-neutral-700 dark:text-neutral-200 mb-1">Token (ETH)</label>
               <input
                 id="send-amount"
                 type="number"
@@ -202,12 +202,12 @@ function App() {
                   className={`px-4 py-2 rounded-lg font-bold shadow w-full transition text-white ${isLoading ? 'bg-yellow-400 cursor-not-allowed opacity-70' : 'bg-green-800 hover:bg-green-700'}`}
                 >
                   {isLoading ? (
-                    <span className="flex items-center justify-center">
+                    <span className="flex text-black items-center justify-center">
                       <svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
                       </svg>
-                      Firing...
+                      Processing...
                     </span>
                   ) : 'Fire Cannon'}
                 </button>
@@ -272,10 +272,10 @@ function App() {
         ))}
       </div>
 
-      {/* Footer */}
-      <footer className="w-full py-4 text-center text-xs text-neutral-400">
-         {new Date().getFullYear()}
-      </footer>
+      {/* Footer Cannon Image */}
+      <div className="w-full flex justify-center items-center py-4">
+        <img src="/cannon1.png" alt="Cannon" style={{ width: 80, height: 'auto' }} />
+      </div>
     </div>
   )
 }
