@@ -205,9 +205,10 @@ function App() {
                     className="appearance-none rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-2 py-2 text-sm text-neutral-900 dark:text-neutral-100 shadow focus:outline-none focus:ring-2 focus:ring-violet-500 w-full"
                   >
                     <option value="ETH">ETH</option>
-                    <option value="USDC">USDC</option>
-                    <option value="DAI">DAI</option>
-                    <option value="WBTC">WBTC</option>
+                    <option value="USDC" disabled>🔒 USDC</option>
+                    <option value="HIGHER" disabled>🔒 $HIGHER</option>
+                    <option value="$CREDIT" disabled>🔒 $CREDIT</option>
+                    <option value="DICKBUTT" disabled>🔒 $ZORA</option>
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
                     <svg className="h-4 w-4 text-neutral-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
