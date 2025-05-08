@@ -209,6 +209,7 @@ function App() {
                     <option value="ETH">ETH</option>
                     <option value="USDC" disabled>🔒 USDC</option>
                     <option value="HIGHER" disabled>🔒 $HIGHER</option>
+                    <option value="HIGHER" disabled>🔒 $FATHORSE</option>
                     <option value="$CREDIT" disabled>🔒 $CREDIT</option>
                     <option value="DICKBUTT" disabled>🔒 $ZORA</option>
                   </select>
