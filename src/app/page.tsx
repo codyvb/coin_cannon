@@ -261,7 +261,7 @@ function App() {
                       key={connector.uid}
                       onClick={() => connect({ connector })}
                       type="button"
-                      className="mb-2 px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-700 text-white font-bold shadow w-full transition"
+                      className="mb-2 px-4 py-2 rounded-lg bg-neutral-600 hover:bg-neutral-700 text-white font-bold shadow w-full transition"
                     >
                       Connect to fire
                     </button>
