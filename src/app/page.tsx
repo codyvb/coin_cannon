@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
+import { sdk } from '@farcaster/miniapp-sdk';
 // Smooth cross-fade rotating text
 function RotatingText({ words, interval = 2200, fadeDuration = 600 }: { words: string[], interval?: number, fadeDuration?: number }) {
   const [index, setIndex] = useState(0)
@@ -28,6 +29,9 @@ import { parseEther } from 'viem'
 import { useAccount, useConnect, useDisconnect, useSendTransaction, useSignMessage } from 'wagmi'
 
 function App() {
+  useEffect(() => {
+    sdk.actions.ready();
+  }, []);
   const account = useAccount()
   const { connectors, connect, status, error } = useConnect()
   const { disconnect } = useDisconnect()
